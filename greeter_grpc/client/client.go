@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"grpcpool/greeter_grpc/proto"
+	"grpcpool/grpc_client_pool"
 	"log"
 )
 
@@ -16,12 +17,22 @@ var (
 
 func main() {
 	flag.Parse()
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	/*
+		conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer conn.Close()
+		sayHello(conn)
+	*/
+	pool, err := grpc_client_pool.GetPool(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
+	conn := pool.Get()
 	sayHello(conn)
+	defer conn.Close()
+	pool.Put(conn)
 }
 
 func sayHello(conn *grpc.ClientConn) {

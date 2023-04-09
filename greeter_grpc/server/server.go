@@ -8,6 +8,7 @@ import (
 	"grpcpool/greeter_grpc/proto"
 	"log"
 	"net"
+	"runtime"
 )
 
 var (
@@ -15,6 +16,7 @@ var (
 )
 
 func main() {
+	runtime.GOMAXPROCS(1)
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
@@ -30,7 +32,7 @@ type server struct {
 }
 
 func (s *server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.HelloReply, error) {
-	fmt.Println("Server Recv :", in.Msg)
+	//fmt.Println("Server Recv :", in.Msg)
 	return &proto.HelloReply{
 		Msg: "Hello Client ",
 	}, nil
