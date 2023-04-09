@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "grpcpool/greeter_grpc/proto";
+package hello;
+
+service Greeter {
+  rpc SayHello(HelloRequest) returns (helloReply) {}
+}
+
+message HelloRequest {
+  string msg = 1;
+}
+
+message helloReply {
+  string msg = 1;
+}
